@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using ApiPull.FileWriting;
+using ApiPull.Helpers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 namespace ApiPull {
@@ -17,7 +19,11 @@ namespace ApiPull {
             List<League> leagues = new List<League>();
 
             foreach (JToken league in jsonLeagues) {
-                leagues.Add(league["league"]?.ToObject<League>());
+                League xLeague = league["league"]?.ToObject<League>();
+                if (xLeague == null) continue;
+                xLeague.Country = CountryHelper.GetCountryFromJson(league["country"]?["name"]?.ToString());
+                Console.WriteLine(xLeague.Country);
+                leagues.Add(xLeague);
             }
             
             foreach (League league in leagues) {
