@@ -10,8 +10,7 @@ namespace ApiPull {
         public static void Main(string[] args) {
             LeagueCollection leagueCollection = JsonConvert.DeserializeObject<LeagueCollection>(TestJson.Json);
             // LeagueCollection leagueCollection = JsonConvert.DeserializeObject<LeagueCollection>(ApiSport.GetApiData());
-
-
+            
             JObject jObject = JObject.Parse(File.ReadAllText(TestJson.FilePath));
             List<JToken> jsonLeagues = jObject["response"]?.Children().ToList();
 
@@ -20,10 +19,15 @@ namespace ApiPull {
             foreach (JToken league in jsonLeagues) {
                 leagues.Add(league["league"]?.ToObject<League>());
             }
+            
             foreach (League league in leagues) {
-                // Console.WriteLine(league.name);
-                // Console.WriteLine(league.Type);
+                if(!league.name.Contains("Women"))
+                    continue;
+                Console.WriteLine(league.name);
+                Console.WriteLine(league.Type);
             }
+            
+            FileWriter.WriteToFile(leagues);
         }
     }
 }
